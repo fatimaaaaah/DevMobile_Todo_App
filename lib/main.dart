@@ -1,23 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart'; // Importation du package Flutter pour les widgets Material
+import 'package:provider/provider.dart'; // Importation du package Provider pour la gestion d'état
 
 void main() {
-  runApp(MyApp());
+  runApp(MyApp()); // Fonction principale qui lance l'application en rendant MyApp
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => TaskProvider(),
+    return ChangeNotifierProvider( // Utilisation de ChangeNotifierProvider pour gérer l'état global avec TaskProvider
+      create: (context) => TaskProvider(),  // Création d'une instance de TaskProvider
       child: MaterialApp(
-        title: 'Todo App',
-        home: TaskScreen(),
-        debugShowCheckedModeBanner: false,
+        title: 'Todo App', // Titre de l'application
+        home: TaskScreen(), // Ecran d'accueil de l'application
+        debugShowCheckedModeBanner: false, // Désactivation de la bannière de débogage
         routes: {
-          AddTaskScreen.routeName: (context) => AddTaskScreen(),
-          EditTaskScreen.routeName: (context) => EditTaskScreen(),
-        },
+          AddTaskScreen.routeName: (context) => AddTaskScreen(), // Définition de la route vers AddTaskScreen
+          EditTaskScreen.routeName: (context) => EditTaskScreen(),  // Définition de la route vers EditTaskScreen
+        }, 
       ),
     );
   }
@@ -36,22 +36,19 @@ class TaskProvider with ChangeNotifier {
     Task(name: 'Task 9', description: 'Description for Task 1', status: 'Todo'),
     Task(name: 'Task 10', description: 'Description for Task 2', status: 'In progress'),
     Task(name: 'Task 11', description: 'Description for Task 3', status: 'Bug'),
-    Task(name: 'Task 12', description: 'Description for Task 4', status: 'Bug'),
-    Task(name: 'Task 13', description: 'Description for Task 5', status: 'Todo'),
-    Task(name: 'Task 14', description: 'Description for Task 6', status: 'Todo'),
-    Task(name: 'Task 15', description: 'Description for Task 7', status: 'Done'),
-    Task(name: 'Task 16', description: 'Description for Task 8', status: 'Todo'),
   ];
 
-  List<Task> _filteredTasks = [];
+  List<Task> _filteredTasks = []; // Liste filtrée de tâches
+
 
   TaskProvider() {
-    _filteredTasks = _tasks;
+    _filteredTasks = _tasks;  // Initialise _filteredTasks avec _tasks
   }
 
-  List<Task> get tasks => _tasks;
-  List<Task> get filteredTasks => _filteredTasks;
+  List<Task> get tasks => _tasks;  // Getter pour récupérer la liste complète des tâches
+  List<Task> get filteredTasks => _filteredTasks;  // Getter pour récupérer la liste filtrée des tâches
 
+ 
   void addTask(Task task) {
     _tasks.add(task);
     notifyListeners();
@@ -71,7 +68,7 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Color getStatusColor(String status) {
+  Color getStatusColor(String status) {  // Méthode pour obtenir la couleur en fonction du statut de la tâche
     switch (status) {
       case 'Todo':
         return Colors.grey;
@@ -95,17 +92,17 @@ class Task {
   Task({required this.name, required this.description, required this.status});
 }
 
-class TaskScreen extends StatefulWidget {
+class TaskScreen extends StatefulWidget {  // Création de l'état de TaskScreen
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
 class _TaskScreenState extends State<TaskScreen> {
-  String _selectedFilter = 'All';
+  String _selectedFilter = 'All';  // Filtre sélectionné par défaut
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(  // Widget de base pour l'interface utilisateur Material
       appBar: AppBar(
         title: Text('Todo App', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Color(int.parse('0xFF333333')),
@@ -145,7 +142,7 @@ class _TaskScreenState extends State<TaskScreen> {
           ),
         ],
       ),
-      body: Consumer<TaskProvider>(
+      body: Consumer<TaskProvider>(  // Widget Consumer pour écouter les changements dans TaskProvider
         builder: (context, taskProvider, child) {
           return TaskList(taskProvider: taskProvider);
         },
@@ -163,18 +160,19 @@ class _TaskScreenState extends State<TaskScreen> {
   }
 }
 
-class TaskList extends StatelessWidget {
+class TaskList extends StatelessWidget { // Fournisseur de tâches
   final TaskProvider taskProvider;
 
-  TaskList({required this.taskProvider});
+  TaskList({required this.taskProvider}); // Constructeur de TaskList
+
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: taskProvider.filteredTasks.length,
+    return ListView.builder( // Construit une liste dynamique de tâches
+      itemCount: taskProvider.filteredTasks.length, // Nombre d'éléments dans la liste filtrée
       itemBuilder: (context, index) {
-        final task = taskProvider.filteredTasks[index];
-        return TaskTile(
+        final task = taskProvider.filteredTasks[index];  // Récupère la tâche à l'index spécifié
+        return TaskTile( // Retourne un widget TaskTile pour afficher une tâche
           task: task,
           index: index,
         );
@@ -184,15 +182,15 @@ class TaskList extends StatelessWidget {
 }
 
 class TaskTile extends StatelessWidget {
-  final Task task;
-  final int index;
+  final Task task;  // Tâche à afficher
+  final int index; // Index de la tâche dans la liste
 
-  TaskTile({required this.task, required this.index});
+  TaskTile({required this.task, required this.index}); // Constructeur de TaskTile
 
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
-    final color = taskProvider.getStatusColor(task.status);
+    final color = taskProvider.getStatusColor(task.status); // Couleur associée au statut de la tâche
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -357,7 +355,7 @@ class AddTaskScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Ajouter une Tâche', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(int.parse('0xFF333333')),
-        automaticallyImplyLeading: false, // Removes the back arrow
+        automaticallyImplyLeading: false, 
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -395,7 +393,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Entre le nom de la tache';
+                return 'Entre le nom de la tache'; // Contrôleur pour le nom de la tâche
               }
               return null;
             },
@@ -406,7 +404,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
           SizedBox(height: 20),
           TextFormField(
             decoration: InputDecoration(
-              labelText: 'Description',
+              labelText: 'Description', // Champ de texte pour la description de la tâche
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
@@ -426,7 +424,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
           Row(
             children: [
               Expanded(
-                flex: 2, // Reduced space for status
+                flex: 2,
                 child: DropdownButtonFormField<String>(
                   value: _status,
                   items: [
@@ -520,7 +518,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
               width: 200.0,
               height: 50.0,
               decoration: BoxDecoration(
-                color: Color(int.parse('0xFF333333')),
+                color: Color(int.parse('0xFF333333')), // Couleur de l'arrière-plan de la barre d'applications
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ElevatedButton(
@@ -582,9 +580,9 @@ class EditTaskScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Modifier la Tâche', style: TextStyle(color: Colors.white)),
+        title: Text('Todo App', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(int.parse('0xFF333333')),
-        automaticallyImplyLeading: false, // Removes the back arrow
+        automaticallyImplyLeading: false, 
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -653,7 +651,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            maxLines: 5, // Increase the number of lines to make the field larger
+            maxLines: 5, // Veut dire quon aura 5 lignes 
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Entrer la description';
@@ -668,7 +666,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
           Row(
             children: [
               Expanded(
-                flex: 2, // Reduced space for status
+                flex: 2, // reduis lespace
                 child: DropdownButtonFormField<String>(
                   value: _status,
                   items: [
